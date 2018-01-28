@@ -35,6 +35,17 @@ exports.jwtPassport = passport.use(new JwtStrategy(opts,
 
 exports.verifyUser = passport.authenticate('jwt', {session: false});
 
+exports.verifyAdmin = (req, res, next) => {
+  if(req.user.admin){
+    next();
+    return
+  }
+  var err = new Error('You require Admin access for this operation!');
+  err.status = 404;
+  next(err);
+}
+
+
 exports.local = passport.use(new LocalStrategy(User.authenticate()));
 passport.serializeUser(User.serializeUser());
 passport.deserializeUser(User.deserializeUser());
